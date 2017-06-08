@@ -1,4 +1,4 @@
-# Redux Combine Reducers Codealong
+# Redux Combine Reducers
 
 ## Objectives
 
