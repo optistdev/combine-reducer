@@ -60,32 +60,36 @@ export function bookApp(state = {
   switch (action.type) {
 
     case "ADD_BOOK":
-      return Object.assign(state, {
-        books: state.books.concat(action.book)
-      });
+      return {
+        ...state,
+        books: [...state.books, action.book]
+      };
 
     case "REMOVE_BOOK":
       const idx = state.books.indexOf(action.id);
-      return Object.assign(state, {
+      return {
+        ...state,
         books: [
           state.books.slice(0, idx),
           state.books.slice(idx + 1),
         ]
-      });
+      };
 
     case "ADD_AUTHOR":
-        return Object.assign(state, {
-          authors: state.authors.concat(action.author)
-        });
+        return {
+          ...state,
+          authors: [...state.authors, action.author]
+        };
 
     case "REMOVE_AUTHOR":
       const idx = state.authors.indexOf(action.id);
-      return Object.assign(state, {
+      return {
+        ...state,
         authors: [
           state.authors.slice(0, idx),
           state.authors.slice(idx + 1)
         ]
-      });
+      };
 
     default:
       return state;
@@ -121,11 +125,11 @@ function booksReducer(state = [], action) {
   switch (action.type) {
 
      case "ADD_BOOK":
-      return state.concat(action.book);
+      return [...state, action.book]
 
     case "REMOVE_BOOK":
       const idx = state.indexOf(action.id);
-      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ];
+      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ]
 
     default:
       return state;
@@ -136,11 +140,11 @@ function authorsReducer(state = [], action) {
   switch (action.type) {
 
     case "ADD_AUTHOR":
-      return state.concat(action.author);
+      return [...state, action.author]
 
     case "REMOVE_AUTHOR":
       const idx = state.indexOf(action.id);
-      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ];
+      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ]
 
     default:
       return state;
@@ -184,11 +188,11 @@ function authorsReducer(state = [], action) {
   switch (action.type) {
 
     case "ADD_AUTHOR":
-      return state.concat(action.author);
+      return [...state, action.author]
 
     case "REMOVE_AUTHOR":
       const idx = state.indexOf(action.id);
-      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ];
+      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ]
 
     default:
       return state;
@@ -209,7 +213,7 @@ function reducer(state = {
   switch (action.type) {
 
     case "ADD_AUTHOR":
-      return state.concat(action.author)
+      return [...state, action.author]
 
     case 'REMOVE_AUTHOR':
       ...
@@ -217,26 +221,25 @@ function reducer(state = {
 }
 ```
 
-Because of this, it means that we can dispatch actions the same way we always
-did.  `store.dispatch({ type: 'ADD_AUTHOR', { title: 'huck finn' } });` will hit
-our switch statement in the reducer and add a new author.   One thing to note,
-is that if you want to have more than one reducer respond to the same action,
-you can.  For example, let's say that when a user inputs information about a
-book, the user also inputs the author's name. The action dispatched may look
-like the following: `store.dispatch({ action: 'ADD_BOOK', book: { title: 'huck
-finn', authorName: 'Mark Twain' } });`. Our reducers may look like the
-following:
+Because of this, we can dispatch actions the same way we always did.
+`store.dispatch({ type: 'ADD_AUTHOR', { title: 'huck finn' } });` will hit our
+switch statement in the reducer and add a new author.   One thing to note, is
+that if you want to have more than one reducer respond to the same action, you
+can.  For example, let's say that when a user inputs information about a book,
+the user also inputs the author's name. The action dispatched may look like the
+following: `store.dispatch({ action: 'ADD_BOOK', book: { title: 'huck finn',
+authorName: 'Mark Twain' } });`. Our reducers may look like the following:
 
 ```javascript
 function booksReducer(state = [], action) {
   switch (action.type) {
 
     case "ADD_BOOK":
-      return state.concat(action.book);
+      return [...state, action.book]
 
     case "REMOVE_BOOK":
       const idx = state.indexOf(action.id);
-      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ];
+      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ]
 
     default:
       return state;
@@ -247,16 +250,16 @@ function authorsReducer(state = [], action) {
   switch (action.type) {
 
     case "ADD_AUTHOR":
-      return state.concat(action.author);
+      return [...state, action.author]
 
     case "REMOVE_AUTHOR":
       const idx = state.indexOf(action.id)
-      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ];
+      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ]
 
     case "ADD_BOOK":
       let existingAuthor = state.filter(author => author.name === action.authorName)
       if(!existingAuthor) {
-        return state.concat(action.author);
+        return [...state, action.author]
       } else {
         return state
       }
