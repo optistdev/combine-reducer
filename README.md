@@ -198,7 +198,7 @@ one reducer. From the application's perspective nothing has changed.
 Now if we examine the `authorsReducer()`, notice that this reducer only
 concerns itself with its own slice of the state. This makes sense. Remember that
 ultimately the array that the `authorsReducer()` returns will be the value to
-the key of authors. Similarly the `authorsReducer()` only receives as it's
+the key of authors. Similarly the `authorsReducer()` only receives as its
 state argument the value of state.authors, in other words the authors array.  
 
 So examining the `authorsReducer()`, we see that we no longer retrieve the
