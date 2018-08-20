@@ -3,7 +3,7 @@
 ## Objectives
 
 1. Write action creators and reducers to modify different pieces of application state
-2. Build __Redux's combineReducers()__ function
+2. Build **Redux's combineReducers()** function
 3. Use the `combineReducers()` function to delegate different pieces of state to each reducer
 
 ## Introduction
@@ -15,7 +15,7 @@ working with multiple resources, placing all of this logic in one reducer
 function can quickly become unwieldy.
 
 Enter `combineReducers()` to save the day! In this lab, we'll see how
-__Redux__'s `combineReducers()` function lets us delegate different pieces of
+**Redux**'s `combineReducers()` function lets us delegate different pieces of
 state to separate reducer functions.
 
 We'll do this in the context of a book application that we'll use to keep track
@@ -53,13 +53,15 @@ So our state object will have two top-level keys, each pointing to an array. For
 now, let's write a single reducer to manage both of these resources.
 
 ```javascript
-export default function bookApp(state = {
-  authors: [],
-  books: []
-}, action) {
-  let idx
+export default function bookApp(
+  state = {
+    authors: [],
+    books: []
+  },
+  action
+) {
+  let idx;
   switch (action.type) {
-
     case "ADD_BOOK":
       return {
         ...state,
@@ -70,33 +72,26 @@ export default function bookApp(state = {
       idx = state.books.indexOf(action.id);
       return {
         ...state,
-        books: [
-          state.books.slice(0, idx),
-          state.books.slice(idx + 1),
-        ]
+        books: [state.books.slice(0, idx), state.books.slice(idx + 1)]
       };
 
     case "ADD_AUTHOR":
-        return {
-          ...state,
-          authors: [...state.authors, action.author]
-        };
+      return {
+        ...state,
+        authors: [...state.authors, action.author]
+      };
 
     case "REMOVE_AUTHOR":
       idx = state.authors.indexOf(action.id);
       return {
         ...state,
-        authors: [
-          state.authors.slice(0, idx),
-          state.authors.slice(idx + 1)
-        ]
+        authors: [state.authors.slice(0, idx), state.authors.slice(idx + 1)]
       };
 
     default:
       return state;
-    }
-};
-
+  }
+}
 ```
 
 This is the current set up in `src/reducers/manageAuthorsAndBooks.js`, and it
@@ -112,28 +107,27 @@ complicated.
 The `combineReducers()` function allows us to write two or more separate
 reducers, then pass each reducer to the `combineReducers()` function to produce
 the reducer we wrote above. Then we pass that combined reducer to the store in
-`src/index.js`. Let's write some code, and then we'll walk through it below.  
+`src/index.js`. Let's write some code, and then we'll walk through it below.
 
 ```javascript
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
 const rootReducer = combineReducers({
   authors: authorsReducer,
   books: booksReducer
 });
 
-export default rootReducer
+export default rootReducer;
 
 function booksReducer(state = [], action) {
-  let idx
+  let idx;
   switch (action.type) {
-
-     case "ADD_BOOK":
-      return [...state, action.book]
+    case "ADD_BOOK":
+      return [...state, action.book];
 
     case "REMOVE_BOOK":
       idx = state.indexOf(action.id);
-      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ]
+      return [...state.slice(0, idx), ...state.slice(idx + 1)];
 
     default:
       return state;
@@ -141,15 +135,14 @@ function booksReducer(state = [], action) {
 }
 
 function authorsReducer(state = [], action) {
-  let idx
+  let idx;
   switch (action.type) {
-
     case "ADD_AUTHOR":
-      return [...state, action.author]
+      return [...state, action.author];
 
     case "REMOVE_AUTHOR":
       idx = state.indexOf(action.id);
-      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ]
+      return [...state.slice(0, idx), ...state.slice(idx + 1)];
 
     default:
       return state;
@@ -157,24 +150,24 @@ function authorsReducer(state = [], action) {
 }
 ```
 
-There's a lot of code there, so let's unpack it a bit.  At the very top you see
+There's a lot of code there, so let's unpack it a bit. At the very top you see
 the following line:
 
 ```javascript
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
 const rootReducer = combineReducers({
   authors: authorsReducer,
   books: booksReducer
 });
 
-export default rootReducer
+export default rootReducer;
 ```
 
-Through `combineReducer`, we're telling __Redux__ to produce a reducer which
+Through `combineReducer`, we're telling **Redux** to produce a reducer which
 will return a state that has both a key of books with a value equal to the
-return value of the `booksReducer()` _and_ a key of __authors__ with a value
-equal to the return value of the `authorsReducer()`.  Now if you look at the
+return value of the `booksReducer()` _and_ a key of **authors** with a value
+equal to the return value of the `authorsReducer()`. Now if you look at the
 `booksReducer()` and the `authorsReducer()` you will see that each returns a
 default state of an empty array.
 
@@ -183,10 +176,13 @@ Since we've changed the default export of `manageAuthorsAndBooks.js`, in
 to update names we've assigned:
 
 ```js
-import { createStore } from 'redux';
-import rootReducer from './reducers/manageAuthorsAndBooks';
+import { createStore } from "redux";
+import rootReducer from "./reducers/manageAuthorsAndBooks";
 
-const store = createStore(rootReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
+const store = createStore(
+  rootReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 ```
 
 By passing our rootReducer to the createStore method, the application maintains
@@ -199,7 +195,7 @@ Now if we examine the `authorsReducer()`, notice that this reducer only
 concerns itself with its own slice of the state. This makes sense. Remember that
 ultimately the array that the `authorsReducer()` returns will be the value to
 the key of authors. Similarly the `authorsReducer()` only receives as its
-state argument the value of state.authors, in other words the authors array.  
+state argument the value of state.authors, in other words the authors array.
 
 So examining the `authorsReducer()`, we see that we no longer retrieve the
 list of authors with a call to `state.authors`, but can access the list of
@@ -207,15 +203,14 @@ authors simply by calling `state`.
 
 ```javascript
 function authorsReducer(state = [], action) {
-  let idx
+  let idx;
   switch (action.type) {
-
     case "ADD_AUTHOR":
-      return [...state, action.author]
+      return [...state, action.author];
 
     case "REMOVE_AUTHOR":
       idx = state.indexOf(action.id);
-      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ]
+      return [...state.slice(0, idx), ...state.slice(idx + 1)];
 
     default:
       return state;
@@ -255,21 +250,19 @@ For example, in our application, when a user inputs information about a book,
 the user _also_ inputs the author's name. It would be handy if, when a user
 submits a book with an author, that author is also added to our author array.
 
-The action dispatched doesn't change: `store.dispatch({ type:
-'ADD_BOOK', { title: 'Snow Crash', author: 'Neal Stephenson' } });`. Our
+The action dispatched doesn't change: `store.dispatch({ type: 'ADD_BOOK', { title: 'Snow Crash', author: 'Neal Stephenson' } });`. Our
 `booksReducer` can stay the same for now:
 
 ```javascript
 function booksReducer(state = [], action) {
-  let idx
+  let idx;
   switch (action.type) {
-
     case "ADD_BOOK":
-      return [...state, action.book]
+      return [...state, action.book];
 
     case "REMOVE_BOOK":
       idx = state.indexOf(action.id);
-      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ]
+      return [...state.slice(0, idx), ...state.slice(idx + 1)];
 
     default:
       return state;
@@ -281,37 +274,44 @@ However, in `authorsReducer`, we can _also_ include a switch case for
 "ADD_BOOK":
 
 ```js
-function authorsReducer(state = [], action) {
-  let idx
-  switch (action.type) {
+import uuid from "uuid";
 
+function authorsReducer(state = [], action) {
+  let idx;
+  switch (action.type) {
     case "ADD_AUTHOR":
-      return [...state, action.author]
+      return [...state, action.author];
 
     case "REMOVE_AUTHOR":
-      idx = state.indexOf(action.id)
-      return [ ...state.slice(0, idx), ...state.slice(idx + 1) ]
+      idx = state.indexOf(action.id);
+      return [...state.slice(0, idx), ...state.slice(idx + 1)];
 
     case "ADD_BOOK":
-      let existingAuthor = state.filter(author => author.authorName === action.book.authorName)
-      if(existingAuthor.length > 0) {
-        return state
+      let existingAuthor = state.filter(
+        author => author.authorName === action.book.authorName
+      );
+      if (existingAuthor.length > 0) {
+        return state;
       } else {
-        return [...state, { authorName: action.book.authorName, id: uuid() }]
+        return [...state, { authorName: action.book.authorName, id: uuid() }];
       }
 
     default:
       return state;
-    }
+  }
 }
 ```
 
-In the new "ADD_BOOK" case, we're checking to see if an authorName matches with
+In the new "ADD*BOOK" case, we're checking to see if an authorName matches with
 the name dispatches from the BookInput component. If the name already exists,
 state is returned unchanged. If the name is not present, it is added to the
 author array. Use the example above to modify the `manageAuthorsAndBooks`
 reducer and you can see the effect. We have two separate forms, one for adding
-just authors, and one that adds books _and_ authors.
+just authors, and one that adds books \_and* authors.
+
+**Note:** We're using a useful package, `uuid`, to handle unique ID generation.
+With this refactor, since we are creating an author ID from within the reducer
+instead of in `AuthorInput.js`, we need to import it here as well.
 
 ## Conclusion
 
@@ -340,8 +340,8 @@ keeping reducers separated helps us organize code and separate concerns. Actions
 can cause multiple reducers to modify their own state, but we can still keep all
 modifications to a _particular_ resource within its own separate file.
 
-### Resources
+#### Resources
 
-+ [Implementing Combine Reducers from Scratch](https://egghead.io/lessons/javascript-redux-implementing-combinereducers-from-scratch)
+- [Implementing Combine Reducers from Scratch](https://egghead.io/lessons/javascript-redux-implementing-combinereducers-from-scratch)
 
 <p class='util--hide'>View <a href='https://learn.co/lessons/combine-reducers-codealong'>Combine Reducers Codealong</a> on Learn.co and start learning to code for free.</p>
