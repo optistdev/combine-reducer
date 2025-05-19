@@ -18,13 +18,6 @@ Enter `combineReducers()` to save the day! In this lab, we'll see how
 **Redux**'s `combineReducers()` function lets us delegate different pieces of
 state to separate reducer functions.
 
-We'll do this in the context of a book application that we'll use to keep track
-of programming books that we've read.
-
-We want our app to do two things:
-
-1. Keep track of all the books we've read: title, author, description.
-2. Keep track of the authors who wrote these books.
 
 #### Determine Application State Structure
 
@@ -191,12 +184,6 @@ one reducer. From the application's perspective nothing has changed.
 
 #### Examining Our New Reducers
 
-Now if we examine the `authorsReducer()`, notice that this reducer only
-concerns itself with its own slice of the state. This makes sense. Remember that
-ultimately the array that the `authorsReducer()` returns will be the value to
-the key of authors. Similarly the `authorsReducer()` only receives as its
-state argument the value of state.authors, in other words the authors array.
-
 So examining the `authorsReducer()`, we see that we no longer retrieve the
 list of authors with a call to `state.authors`, but can access the list of
 authors simply by calling `state`.
@@ -301,17 +288,6 @@ function authorsReducer(state = [], action) {
   }
 }
 ```
-
-In the new "ADD*BOOK" case, we're checking to see if an authorName matches with
-the name dispatches from the BookInput component. If the name already exists,
-state is returned unchanged. If the name is not present, it is added to the
-author array. Use the example above to modify the `manageAuthorsAndBooks`
-reducer and you can see the effect. We have two separate forms, one for adding
-just authors, and one that adds books \_and* authors.
-
-**Note:** We're using a useful package, `uuid`, to handle unique ID generation.
-With this refactor, since we are creating an author ID from within the reducer
-instead of in `AuthorInput.js`, we need to import it here as well.
 
 ## Conclusion
 
