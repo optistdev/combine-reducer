@@ -182,29 +182,6 @@ By passing our rootReducer to the createStore method, the application maintains
 its initial state of `{ books: [], authors: [] }`, just as it did when we had
 one reducer. From the application's perspective nothing has changed.
 
-#### Examining Our New Reducers
-
-So examining the `authorsReducer()`, we see that we no longer retrieve the
-list of authors with a call to `state.authors`, but can access the list of
-authors simply by calling `state`.
-
-```javascript
-function authorsReducer(state = [], action) {
-  let idx;
-  switch (action.type) {
-    case "ADD_AUTHOR":
-      return [...state, action.author];
-
-    case "REMOVE_AUTHOR":
-      idx = state.indexOf(action.id);
-      return [...state.slice(0, idx), ...state.slice(idx + 1)];
-
-    default:
-      return state;
-  }
-}
-```
-
 #### Dispatching Actions
 
 The `combineReducer()` function returns to us one large reducer that looks like
