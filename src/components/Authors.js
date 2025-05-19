@@ -5,12 +5,14 @@ class Authors extends Component {
 
   render() {
 
-    let authors = this.props.authors.map(author => <li key={author.id}>{author.authorName}</li>);
+    const {authors} = this.props
+
+    let filteredAuthors = authors.map(author => <li key={author.id}>{author.authorName}</li>);
 
     return (
       <div>
         <ul>
-          {authors}
+          {filteredAuthors}
         </ul>
       </div>
     );
